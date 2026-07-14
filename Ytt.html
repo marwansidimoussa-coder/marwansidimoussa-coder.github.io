@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Doge Mining Hub</title>
+    <style>
+        body { background: #0f0f0f; color: #fff; text-align: center; font-family: sans-serif; padding: 20px; }
+        .box { background: #1a1a1a; padding: 20px; border-radius: 15px; margin: 10px; }
+        button { padding: 15px 30px; background: #f3ba2f; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 90%; }
+        #withdraw-section { display: none; margin-top: 20px; border: 2px solid #28a745; padding: 20px; border-radius: 15px; }
+    </style>
+</head>
+<body>
+    <h1>منصة تعدين الدوجي</h1>
+    <div class="box">
+        <h2 id="balance">الرصيد: 0.0000 DOGE</h2>
+        <p>استمر في التعدين للوصول للحد الأدنى والسحب مرة أخرى!</p>
+        <button onclick="startMining()">شاهد الإعلان وقم بالتعدين</button>
+    </div>
+
+    <div id="withdraw-section" class="box">
+        <h3>يمكنك الآن سحب أرباحك</h3>
+        <input type="text" id="wallet" placeholder="ضع عنوان محفظة DOGE">
+        <button onclick="withdraw()" style="background: #28a745;">سحب الرصيد وتصفير العداد</button>
+    </div>
+
+    <script>
+        let balance = 0.0000;
+        function startMining() {
+            window.open("https://www.effectivecpmnetwork.com/rnn398mtfj?key=7006b88308b4048e4019ce852159bc89", "_blank");
+            balance += 0.0025;
+            document.getElementById('balance').innerText = "الرصيد: " + balance.toFixed(4) + " DOGE";
+            if (balance >= 0.0100) {
+                document.getElementById('withdraw-section').style.display = "block";
+            }
+        }
+
+        function withdraw() {
+            let address = document.getElementById('wallet').value;
+            if(address.length < 10) {
+                alert("يرجى إدخال عنوان محفظة صحيح!");
+            } else {
+                // إرسال الطلب للواتساب
+                window.location.href = "https://wa.me/212xxxxxxxxx?text=أطلب سحب أرباحي: " + balance.toFixed(4) + " DOGE، المحفظة: " + address;
+                
+                // تصفير الرصيد بعد السحب ليعود المستخدم للجمع من جديد
+                balance = 0.0000;
+                document.getElementById('balance').innerText = "الرصيد: 0.0000 DOGE";
+                document.getElementById('withdraw-section').style.display = "none";
+                alert("تم إرسال طلب السحب! يمكنك البدء في التعدين من جديد.");
+            }
+        }
+    </script>
+</body>
+</html>
