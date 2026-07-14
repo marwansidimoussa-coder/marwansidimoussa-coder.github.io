@@ -2,53 +2,64 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Doge Mining Hub</title>
+    <title>Doge Mining</title>
     <style>
         body { background: #0f0f0f; color: #fff; text-align: center; font-family: sans-serif; padding: 20px; }
-        .box { background: #1a1a1a; padding: 20px; border-radius: 15px; margin: 10px; }
-        button { padding: 15px 30px; background: #f3ba2f; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 90%; }
-        #withdraw-section { display: none; margin-top: 20px; border: 2px solid #28a745; padding: 20px; border-radius: 15px; }
+        .box { background: #1a1a1a; padding: 20px; border-radius: 15px; margin: 10px; border: 1px solid #333; }
+        input { padding: 15px; width: 85%; border-radius: 8px; border: 1px solid #f3ba2f; margin-bottom: 15px; background: #000; color: #fff; font-size: 16px; }
+        button { padding: 15px 30px; background: #f3ba2f; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 90%; color: #000; }
+        #mining-section { display: none; }
     </style>
 </head>
 <body>
     <h1>منصة تعدين الدوجي</h1>
-    <div class="box">
-        <h2 id="balance">الرصيد: 0.0000 DOGE</h2>
-        <p>استمر في التعدين للوصول للحد الأدنى والسحب مرة أخرى!</p>
-        <button onclick="startMining()">شاهد الإعلان وقم بالتعدين</button>
+    
+    <div id="register-section" class="box">
+        <h3>سجل محفظتك للبدء</h3>
+        <input type="text" id="walletInput" placeholder="ضع عنوان محفظة DOGE الخاصة بك">
+        <button onclick="registerWallet()">حفظ المحفظة والبدء</button>
     </div>
 
-    <div id="withdraw-section" class="box">
-        <h3>يمكنك الآن سحب أرباحك</h3>
-        <input type="text" id="wallet" placeholder="ضع عنوان محفظة DOGE">
-        <button onclick="withdraw()" style="background: #28a745;">سحب الرصيد وتصفير العداد</button>
+    <div id="mining-section" class="box">
+        <h2 id="balance">الرصيد: 0.0000 DOGE</h2>
+        <p id="saved-wallet" style="color: #888;"></p>
+        <button onclick="startMining()">شاهد الإعلان وقم بالتعدين</button>
+        <button onclick="withdraw()" style="background: #28a745; margin-top: 10px;">طلب سحب الرصيد</button>
     </div>
 
     <script>
         let balance = 0.0000;
+        
+        function registerWallet() {
+            let address = document.getElementById('walletInput').value;
+            if(address.length < 10) {
+                alert("يرجى إدخال عنوان محفظة صحيح!");
+            } else {
+                localStorage.setItem('userWallet', address);
+                document.getElementById('register-section').style.display = "none";
+                document.getElementById('mining-section').style.display = "block";
+                document.getElementById('saved-wallet').innerText = "المحفظة: " + address;
+            }
+        }
+
+        // باش الموقع يعقل عليه حتى يلا خرج ورجع
+        window.onload = function() {
+            if(localStorage.getItem('userWallet')) {
+                document.getElementById('register-section').style.display = "none";
+                document.getElementById('mining-section').style.display = "block";
+                document.getElementById('saved-wallet').innerText = "المحفظة: " + localStorage.getItem('userWallet');
+            }
+        }
+
         function startMining() {
             window.open("https://www.effectivecpmnetwork.com/rnn398mtfj?key=7006b88308b4048e4019ce852159bc89", "_blank");
             balance += 0.0025;
             document.getElementById('balance').innerText = "الرصيد: " + balance.toFixed(4) + " DOGE";
-            if (balance >= 0.0100) {
-                document.getElementById('withdraw-section').style.display = "block";
-            }
         }
 
         function withdraw() {
-            let address = document.getElementById('wallet').value;
-            if(address.length < 10) {
-                alert("يرجى إدخال عنوان محفظة صحيح!");
-            } else {
-                // إرسال الطلب للواتساب
-                window.location.href = "https://wa.me/212xxxxxxxxx?text=أطلب سحب أرباحي: " + balance.toFixed(4) + " DOGE، المحفظة: " + address;
-                
-                // تصفير الرصيد بعد السحب ليعود المستخدم للجمع من جديد
-                balance = 0.0000;
-                document.getElementById('balance').innerText = "الرصيد: 0.0000 DOGE";
-                document.getElementById('withdraw-section').style.display = "none";
-                alert("تم إرسال طلب السحب! يمكنك البدء في التعدين من جديد.");
-            }
+            let address = localStorage.getItem('userWallet');
+            window.location.href = "https://wa.me/212xxxxxxxxx?text=أطلب سحب أرباحي، الرصيد: " + balance.toFixed(4) + " DOGE، المحفظة: " + address;
         }
     </script>
 </body>
