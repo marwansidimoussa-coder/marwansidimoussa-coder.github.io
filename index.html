@@ -2,22 +2,16 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مراقب البيتكوين</title>
     <style>
-        body { margin: 0; padding: 0; background: #0b0e11; overflow: hidden; }
-        
-        /* الإعلان كيبقى مثبت الفوق */
-        .ad-container { position: fixed; top: 0; left: 0; width: 100%; height: 90px; z-index: 1000; background: #1e1e1e; }
-        
-        /* الرسم البياني كيجي تحت الإعلان */
-        .chart-container { position: absolute; top: 90px; bottom: 0; width: 100%; }
+        body { background: #0b0e11; color: white; margin: 0; padding: 0; text-align: center; }
+        .ad-container { margin: 10px auto; min-height: 100px; display: block; }
     </style>
 </head>
 <body>
 
-    <!-- الإعلان -->
-    <div class="ad-container">
+    <!-- البلاصة ديال الإعلان -->
+    <div id="ad-slot" class="ad-container">
         <script type="text/javascript" data-cfasync="false" src="https://pl30367880.effectivecpmnetwork.com/63/33/3d/63333da24fa507d60647cf4605fb7491.js"></script>
     </div>
 
@@ -27,6 +21,18 @@
         { "symbol": "BITSTAMP:BTCUSD", "theme": "dark", "locale": "ar", "allow_symbol_change": true }
         </script>
     </div>
+
+    <script>
+        // هاد السكريبت كيبدل الإعلان كل 30 ثانية أوتوماتيكياً بلا ما المستخدم يمس والو
+        setInterval(function() {
+            var adSlot = document.getElementById('ad-slot');
+            adSlot.innerHTML = ''; // كيخوي البلاصة
+            var script = document.createElement('script');
+            script.type = "text/javascript";
+            script.src = "https://pl30367880.effectivecpmnetwork.com/63/33/3d/63333da24fa507d60647cf4605fb7491.js";
+            adSlot.appendChild(script); // كيجيب إعلان جديد
+        }, 30000); // 30000 ميلي ثانية = 30 ثانية
+    </script>
 
 </body>
 </html>
