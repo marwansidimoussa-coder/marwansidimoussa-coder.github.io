@@ -5,38 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مراقب البيتكوين المباشر</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #121212; color: #fff; padding: 20px; }
-        .price-box { background: #1e1e1e; padding: 30px; border-radius: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.3); display: inline-block; width: 90%; max-width: 400px; }
-        h1 { font-size: 1.2em; color: #aaa; margin-bottom: 10px; }
-        #price { font-size: 2.5em; color: #f7931a; font-weight: bold; }
-        .ad-container { margin-top: 30px; padding: 10px; background: #fff; border-radius: 10px; }
+        body { background: #0b0e11; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 0; }
+        .ad-top { margin: 15px auto; padding: 5px; background: #1e1e1e; border-radius: 8px; max-width: 728px; }
+        .chart-container { height: 500px; width: 100%; }
+        footer { margin-top: 20px; font-size: 0.8em; color: #555; }
     </style>
 </head>
 <body>
 
-    <div class="price-box">
-        <h1>سعر البيتكوين ₿</h1>
-        <div id="price">جاري التحميل...</div>
-    </div>
-
-    <!-- كود إعلان Adsterra -->
-    <div class="ad-container">
+    <!-- الإعلان ديال Adsterra الفوق -->
+    <div class="ad-top">
         <script src="https://pl30367880.effectivecpmnetwork.com/63/33/3d/63333da24fa507d60647cf4605fb7491.js"></script>
     </div>
 
-    <script>
-        async function getPrice() {
-            try {
-                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-                const data = await res.json();
-                document.getElementById('price').innerText = data.bitcoin.usd + " $";
-            } catch (e) {
-                document.getElementById('price').innerText = "حدث خطأ";
-            }
+    <!-- الرسم البياني الاحترافي للبيتكوين -->
+    <div class="chart-container">
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
+        {
+            "symbol": "BITSTAMP:BTCUSD",
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "ar",
+            "allow_symbol_change": true,
+            "calendar": true,
+            "support_host": "https://www.tradingview.com"
         }
-        // تحديث السعر كل 10 ثواني أوتوماتيكياً
-        setInterval(getPrice, 10000);
-        getPrice();
-    </script>
+        </script>
+    </div>
+
+    <footer>تحديث مباشر للأسعار - منصة مراقبة العملات</footer>
+
 </body>
 </html>
