@@ -1,66 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Doge Mining</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مراقب البيتكوين المباشر</title>
     <style>
-        body { background: #0f0f0f; color: #fff; text-align: center; font-family: sans-serif; padding: 20px; }
-        .box { background: #1a1a1a; padding: 20px; border-radius: 15px; margin: 10px; border: 1px solid #333; }
-        input { padding: 15px; width: 85%; border-radius: 8px; border: 1px solid #f3ba2f; margin-bottom: 15px; background: #000; color: #fff; font-size: 16px; }
-        button { padding: 15px 30px; background: #f3ba2f; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 90%; color: #000; }
+        body { font-family: sans-serif; text-align: center; background: #121212; color: #fff; padding: 20px; }
+        .price-box { background: #1e1e1e; padding: 30px; border-radius: 20px; box-shadow: 0 8px 15px rgba(0,0,0,0.3); display: inline-block; width: 90%; max-width: 400px; }
+        h1 { font-size: 1.2em; color: #aaa; margin-bottom: 10px; }
+        #price { font-size: 2.5em; color: #f7931a; font-weight: bold; }
+        .ad-container { margin-top: 30px; padding: 10px; background: #fff; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <h1>منصة تعدين الدوجي</h1>
-    
-    <div id="register-section" class="box">
-        <h3>سجل محفظتك للبدء</h3>
-        <input type="text" id="walletInput" placeholder="ضع عنوان محفظة DOGE الخاصة بك">
-        <button onclick="registerWallet()">حفظ المحفظة والبدء</button>
+
+    <div class="price-box">
+        <h1>سعر البيتكوين ₿</h1>
+        <div id="price">جاري التحميل...</div>
     </div>
 
-    <div id="mining-section" class="box" style="display:none;">
-        <h2 id="balance">الرصيد: 0.0000 DOGE</h2>
-        <p id="saved-wallet" style="color: #888;"></p>
-        <button onclick="startMining()">شاهد الإعلان وقم بالتعدين</button>
-        <button id="withdrawBtn" onclick="withdraw()" style="background: #28a745; margin-top: 10px; display:none;">سحب الأرباح الآن</button>
+    <!-- كود إعلان Adsterra -->
+    <div class="ad-container">
+        <script src="https://pl30367880.effectivecpmnetwork.com/63/33/3d/63333da24fa507d60647cf4605fb7491.js"></script>
     </div>
 
     <script>
-        let balance = 0.0000;
-        
-        function registerWallet() {
-            let address = document.getElementById('walletInput').value;
-            if(address.length < 10) {
-                alert("يرجى إدخال عنوان محفظة صحيح!");
-            } else {
-                localStorage.setItem('userWallet', address);
-                document.getElementById('register-section').style.display = "none";
-                document.getElementById('mining-section').style.display = "block";
-                document.getElementById('saved-wallet').innerText = "المحفظة: " + address;
+        async function getPrice() {
+            try {
+                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+                const data = await res.json();
+                document.getElementById('price').innerText = data.bitcoin.usd + " $";
+            } catch (e) {
+                document.getElementById('price').innerText = "حدث خطأ";
             }
         }
-
-        function startMining() {
-            window.open("https://www.effectivecpmnetwork.com/rnn398mtfj?key=7006b88308b4048e4019ce852159bc89", "_blank");
-            balance += 0.0025;
-            document.getElementById('balance').innerText = "الرصيد: " + balance.toFixed(4) + " DOGE";
-            
-            // ملي يوصل لـ 0.01 كيبان زر السحب
-            if (balance >= 0.0100) {
-                document.getElementById('withdrawBtn').style.display = "block";
-            }
-        }
-
-        function withdraw() {
-            // بلا واتساب، الميساج كيبان في الموقع
-            alert("تم تسجيل طلب السحب بنجاح! سيتم إرسال الدوجي إلى محفظتك قريباً.");
-            
-            // تصفير الرصيد
-            balance = 0.0000;
-            document.getElementById('balance').innerText = "الرصيد: 0.0000 DOGE";
-            document.getElementById('withdrawBtn').style.display = "none";
-        }
+        // تحديث السعر كل 10 ثواني أوتوماتيكياً
+        setInterval(getPrice, 10000);
+        getPrice();
     </script>
 </body>
 </html>
