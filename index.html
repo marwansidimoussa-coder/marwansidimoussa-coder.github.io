@@ -2,40 +2,38 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مراقب البيتكوين المباشر</title>
     <style>
         body { background: #0b0e11; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 0; }
-        .ad-top { margin: 15px auto; padding: 5px; background: #1e1e1e; border-radius: 8px; max-width: 728px; }
-        .chart-container { height: 500px; width: 100%; }
-        footer { margin-top: 20px; font-size: 0.8em; color: #555; }
+        .ad-container { margin: 20px auto; min-height: 250px; background: #1e1e1e; padding: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- الإعلان ديال Adsterra الفوق -->
-    <div class="ad-top">
-        <script src="https://pl30367880.effectivecpmnetwork.com/63/33/3d/63333da24fa507d60647cf4605fb7491.js"></script>
+    <!-- البلاصة ديال الإعلان -->
+    <div class="ad-container" id="ad-wrapper">
+        <div id="ad-slot">
+            <script type="text/javascript" data-cfasync="false" src="https://pl30367880.effectivecpmnetwork.com/63/33/3d/63333da24fa507d60647cf4605fb7491.js"></script>
+        </div>
     </div>
 
-    <!-- الرسم البياني الاحترافي للبيتكوين -->
+    <!-- الرسم البياني -->
     <div class="chart-container">
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js">
-        {
-            "symbol": "BITSTAMP:BTCUSD",
-            "interval": "D",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "1",
-            "locale": "ar",
-            "allow_symbol_change": true,
-            "calendar": true,
-            "support_host": "https://www.tradingview.com"
-        }
+        { "symbol": "BITSTAMP:BTCUSD", "theme": "dark", "locale": "ar", "allow_symbol_change": true }
         </script>
     </div>
 
-    <footer>تحديث مباشر للأسعار - منصة مراقبة العملات</footer>
+    <script>
+        // هاد السكريبت كيعاود يشارجي الإعلان كل 30 ثانية أوتوماتيكياً
+        setInterval(function() {
+            var adSlot = document.getElementById('ad-slot');
+            adSlot.innerHTML = ''; // كيخوي البلاصة
+            var script = document.createElement('script');
+            script.src = "https://pl30367880.effectivecpmnetwork.com/63/33/3d/63333da24fa507d60647cf4605fb7491.js";
+            adSlot.appendChild(script); // كيجيب إعلان جديد
+        }, 30000); // 30000 ميلي ثانية = 30 ثانية
+    </script>
 
 </body>
 </html>
