@@ -1,70 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Doge Mining - السحب التلقائي</title>
+    <title>لعبة التداول مروان</title>
     <style>
-        body { background: #0f0f0f; color: #fff; text-align: center; font-family: sans-serif; padding: 20px; }
-        .box { background: #1a1a1a; padding: 20px; border-radius: 15px; margin: 10px; border: 1px solid #333; }
-        input { padding: 15px; width: 85%; border-radius: 8px; border: 1px solid #f3ba2f; margin-bottom: 15px; background: #000; color: #fff; }
-        button { padding: 15px 30px; background: #f3ba2f; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 90%; color: #000; }
-        #withdrawBtn { background: #28a745; color: #fff; display: none; }
+        body { background: #1a1a1a; color: white; text-align: center; font-family: Arial; padding-top: 50px; }
+        button { padding: 15px 30px; font-size: 20px; cursor: pointer; background: #f7931a; border: none; color: white; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <h1>منصة تعدين الدوجي</h1>
-    <div id="register-section" class="box">
-        <h3>أدخل محفظتك للبدء</h3>
-        <input type="text" id="walletInput" placeholder="عنوان محفظة DOGE">
-        <button onclick="registerWallet()">بدء التعدين</button>
-    </div>
-    <div id="mining-section" class="box" style="display:none;">
-        <h2 id="balance">الرصيد: 0.0000 DOGE</h2>
-        <button onclick="startMining()">شاهد الإعلان وقم بالتعدين</button>
-        <button id="withdrawBtn" onclick="sendWithdrawRequest()">سحب الرصيد (إرسال للموقع)</button>
-    </div>
+
+    <h1>تحدى نفسك: هل سيرتفع سعر البيتكوين؟</h1>
+    <p>اضغط على الزر لتوقع حركة السوق واربح!</p>
+    
+    <button onclick="playGame()">توقع الارتفاع!</button>
+    <p id="result"></p>
 
     <script>
-        let balance = parseFloat(localStorage.getItem('userBalance')) || 0.0000;
-        let wallet = localStorage.getItem('userWallet');
-
-        if(wallet) {
-            document.getElementById('register-section').style.display = "none";
-            document.getElementById('mining-section').style.display = "block";
-            document.getElementById('balance').innerText = "الرصيد: " + balance.toFixed(4) + " DOGE";
-            if(balance >= 0.1000) document.getElementById('withdrawBtn').style.display = "block";
-        }
-
-        function registerWallet() {
-            let address = document.getElementById('walletInput').value;
-            if(address.length > 10) {
-                localStorage.setItem('userWallet', address);
-                location.reload();
-            } else { alert("يرجى إدخال محفظة صحيحة"); }
-        }
-
-        function startMining() {
-            window.open("https://www.effectivecpmnetwork.com/rnn398mtfj?key=7006b88308b4048e4019ce852159bc89", "_blank");
-            balance += 0.0250;
-            localStorage.setItem('userBalance', balance);
-            document.getElementById('balance').innerText = "الرصيد: " + balance.toFixed(4) + " DOGE";
-            if(balance >= 0.1000) document.getElementById('withdrawBtn').style.display = "block";
-        }
-
-        function sendWithdrawRequest() {
-            let wallet = localStorage.getItem('userWallet');
-            let amount = balance.toFixed(4);
-            
-            // هنا غادي نصيفطو البيانات لملف الإكسيل ديالك
-            let url = "https://script.google.com/macros/s/AKfycbz_XXXXXXXXXXXX/exec"; // هنا غتحط الرابط ديال الإكسيل ديالك
-            fetch(url + "?wallet=" + wallet + "&amount=" + amount);
-            
-            alert("تم إرسال طلب السحب بنجاح! سيتم تحويل " + amount + " DOGE إلى محفظتك " + wallet);
-            balance = 0.0000;
-            localStorage.setItem('userBalance', balance);
-            document.getElementById('balance').innerText = "الرصيد: 0.0000 DOGE";
-            document.getElementById('withdrawBtn').style.display = "none";
+        function playGame() {
+            let win = Math.random() > 0.5;
+            document.getElementById("result").innerHTML = win ? "مبروك! توقعك في محله!" : "حظ أوفر، جرب مرة أخرى!";
         }
     </script>
+
+    <!-- كود الإعلان الخاص بك هنا -->
+    <script type="text/javascript" src="//www.effectivecpmnetwork.com/rnn398mtfj?key=7006b88308b4048e4019ce852159bc89"></script>
+
 </body>
 </html>
