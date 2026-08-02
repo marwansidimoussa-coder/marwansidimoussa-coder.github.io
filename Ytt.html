@@ -1,55 +1,130 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Doge Mining Hub</title>
-    <style>
-        body { background: #0f0f0f; color: #fff; text-align: center; font-family: sans-serif; padding: 20px; }
-        .box { background: #1a1a1a; padding: 20px; border-radius: 15px; margin: 10px; }
-        button { padding: 15px 30px; background: #f3ba2f; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; font-weight: bold; width: 90%; }
-        #withdraw-section { display: none; margin-top: 20px; border: 2px solid #28a745; padding: 20px; border-radius: 15px; }
-    </style>
-</head>
-<body>
-    <h1>منصة تعدين الدوجي</h1>
-    <div class="box">
-        <h2 id="balance">الرصيد: 0.0000 DOGE</h2>
-        <p>استمر في التعدين للوصول للحد الأدنى والسحب مرة أخرى!</p>
-        <button onclick="startMining()">شاهد الإعلان وقم بالتعدين</button>
-    </div>
+import requests
+from datetime import datetime, timedelta
+import json
+import os
 
-    <div id="withdraw-section" class="box">
-        <h3>يمكنك الآن سحب أرباحك</h3>
-        <input type="text" id="wallet" placeholder="ضع عنوان محفظة DOGE">
-        <button onclick="withdraw()" style="background: #28a745;">سحب الرصيد وتصفير العداد</button>
-    </div>
+USERS_FILE = "users_database.json"
 
-    <script>
-        let balance = 0.0000;
-        function startMining() {
-            window.open("https://www.effectivecpmnetwork.com/rnn398mtfj?key=7006b88308b4048e4019ce852159bc89", "_blank");
-            balance += 0.0025;
-            document.getElementById('balance').innerText = "الرصيد: " + balance.toFixed(4) + " DOGE";
-            if (balance >= 0.0100) {
-                document.getElementById('withdraw-section').style.display = "block";
-            }
-        }
+# ==========================================
+# 📌 حط هنا عنوان محفظة الدوجي الخاصة بك بين القوسين
+# ==========================================
+MY_DOGECOIN_WALLET = "YOUR_DOGECOIN_WALLET_ADDRESS_HERE"
 
-        function withdraw() {
-            let address = document.getElementById('wallet').value;
-            if(address.length < 10) {
-                alert("يرجى إدخال عنوان محفظة صحيح!");
-            } else {
-                // إرسال الطلب للواتساب
-                window.location.href = "https://wa.me/212xxxxxxxxx?text=أطلب سحب أرباحي: " + balance.toFixed(4) + " DOGE، المحفظة: " + address;
-                
-                // تصفير الرصيد بعد السحب ليعود المستخدم للجمع من جديد
-                balance = 0.0000;
-                document.getElementById('balance').innerText = "الرصيد: 0.0000 DOGE";
-                document.getElementById('withdraw-section').style.display = "none";
-                alert("تم إرسال طلب السحب! يمكنك البدء في التعدين من جديد.");
-            }
-        }
-    </script>
-</body>
-</html>
+def get_doge_price():
+    try:
+        url = "https://api.coingecko.com/api/v3/simple/price"
+        params = {'ids': 'dogecoin', 'vs_currencies': 'usd'}
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            return response.json()['dogecoin']['usd']
+    except:
+        pass
+    return 0.20  # سعر تقريبي احتياطي
+
+def load_users():
+    if os.path.exists(USERS_FILE):
+        with open(USERS_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_users(users):
+    with open(USERS_FILE, "w") as f:
+        json.dump(users, f, indent=4)
+
+def process_doge_deposit(username, doge_amount):
+    doge_price = get_doge_price()
+    usd_value = doge_amount * doge_price
+    
+    effective_usd = (usd_value // 5) * 5
+    
+    if effective_usd < 5:
+        return f"❌ الحد الأدنى للإيداع هو ما يعادل 5$ بالدوجي (حوالي {5/doge_price:.2f} DOGE)."
+    
+    months_to_add = int(effective_usd)
+    
+    users = load_users()
+    now = datetime.utcnow()
+    
+    if username in users:
+        current_expiry = datetime.fromisoformat(users[username]['expiry_date'])
+        if current_expiry > now:
+            new_expiry = current_expiry + timedelta(days=30 * months_to_add)
+        else:
+            new_expiry = now + timedelta(days=30 * months_to_add)
+    else:
+        new_expiry = now + timedelta(days=30 * months_to_add)
+        
+    users[username] = {
+        "doge_paid": doge_amount,
+        "usd_equivalent": effective_usd,
+        "expiry_date": new_expiry.isoformat(),
+        "status": "Active"
+    }
+    
+    save_users(users)
+    return f"✅ تم بنجاح! الزبون {username} أودع {doge_amount} DOGE (ما يعادل {effective_usd}$) وتم تفعيل اشتراكه لـ {months_to_add} أشهر."
+
+def fetch_all_crypto():
+    url = "https://api.coingecko.com/api/v3/coins/markets"
+    params = {
+        'vs_currency': 'usd',
+        'order': 'market_cap_desc',
+        'per_page': 100,
+        'page': 1,
+        'sparkline': 'false'
+    }
+    
+    try:
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        print(f"Error fetching data: {e}")
+    return []
+
+def generate_markdown(data):
+    doge_price = get_doge_price()
+    min_doge_5usd = 5 / doge_price
+    
+    content = f"# 🚀 منصة تتبع جميع العملات الرقمية (الدفع بالدوجي 🐕)\n"
+    content += f"⏰ آخر تحديث تلقائي: `{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC`\n\n"
+    content += f"### 💳 معلومات الإيداع والاشتراك\n"
+    content += f"> * **فترة التجربة:** يومين مجاناً 🎁\n"
+    content += f"> * **الحد الأدنى للإيداع:** 5$ (ما يعادل تقريباً `{min_doge_5usd:.2f} DOGE`)\n"
+    content += f"> * **نظام الأشهر:** كل 5$ تمنح **5 أشهر** (وتتضاعف بـ 5$: 10$ = 10 أشهر، وهكذا).\n"
+    content += f"> \n"
+    content += f"> 🟡 **أرسل قيمة الدوجي إلى محفظتنا الرسمية التالية:**\n"
+    content += f"> ```text\n"
+    content += f"> {MY_DOGECOIN_WALLET}\n"
+    content += f"> ```\n\n"
+    content += f"---\n\n"
+    content += f"| العملة | الرمز | الثمن الدقيق (USD) | التغير (24س) |\n"
+    content += f"| :--- | :--- | :--- | :--- |\n"
+    
+    for coin in data:
+        name = coin.get('name')
+        symbol = coin.get('symbol').upper()
+        price = coin.get('current_price')
+        change = coin.get('price_change_percentage_24h', 0)
+        
+        if price is not None:
+            if price < 0.0001:
+                price_str = f"${price:.8f}"
+            elif price < 1:
+                price_str = f"${price:.4f}"
+            else:
+                price_str = f"${price:,.2f}"
+        else:
+            price_str = "N/A"
+            
+        change_str = f"{change:.2f}%" if change is not None else "0.00%"
+        content += f"| {name} | **{symbol}** | {price_str} | {change_str} |\n"
+        
+    with open("README.md", "w", encoding="utf-8") as f:
+        f.write(content)
+    print("تم تحديث الواجهة ومحفظة الدوجي بنجاح!")
+
+if __name__ == "__main__":
+    crypto_data = fetch_all_crypto()
+    if crypto_data:
+        generate_markdown(crypto_data)
