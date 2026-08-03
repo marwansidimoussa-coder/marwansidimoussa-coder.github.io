@@ -3,110 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة تتبع وتداول العملات الرقمية</title>
+    <title>منصة التداول والتحليل بالشموع الحية</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background-color: #0d1117; color: #c9d1d9; margin: 0; padding: 15px; }
-        .container { max-width: 900px; margin: auto; background: #161b22; padding: 20px; border-radius: 10px; }
-        h1 { color: #58a6ff; text-align: center; font-size: 22px; }
-        .box { background: #21262d; border: 1px solid #30363d; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .wallet-box { background: #1f2428; border: 2px dashed #f0b90b; padding: 10px; text-align: center; word-break: break-all; font-family: monospace; color: #f0b90b; font-size: 15px; border-radius: 5px; margin-top: 10px; }
+        body { font-family: Tahoma, sans-serif; background-color: #131722; color: #d1d4dc; margin: 0; padding: 15px; }
+        .container { max-width: 1100px; margin: auto; background: #1e222d; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        h1 { color: #2962ff; text-align: center; font-size: 24px; margin-bottom: 10px; }
+        
+        /* صندوق الشروط والمحفظة الفوق */
+        .terms-box { background: #2a2e39; border: 2px solid #ff9800; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .terms-box h3 { color: #ff9800; margin-top: 0; margin-bottom: 10px; text-align: center; }
+        .terms-box ul { margin: 0 0 15px 0; padding-right: 20px; font-size: 14px; line-height: 1.6; }
+        .wallet-display { background: #131722; border: 2px dashed #ff9800; padding: 10px; text-align: center; word-break: break-all; font-family: monospace; color: #ff9800; font-size: 15px; border-radius: 5px; }
+
+        .main-wrapper { display: flex; flex-direction: column; gap: 20px; }
+        
+        @media (min-width: 992px) {
+            .main-wrapper { flex-direction: row; }
+            .left-panel { width: 320px; flex-shrink: 0; }
+            .right-panel { flex-grow: 1; }
+        }
+
+        .box { background: #2a2e39; border: 1px solid #434651; padding: 15px; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 10px; border-bottom: 1px solid #30363d; text-align: center; font-size: 14px; }
-        th { background: #21262d; color: #58a6ff; }
-        .green { color: #3fb950; }
-        .red { color: #f85149; }
+        th, td { padding: 10px; border-bottom: 1px solid #434651; text-align: center; font-size: 14px; }
+        th { background: #1e222d; color: #2962ff; }
         tr.clickable { cursor: pointer; transition: background 0.2s; }
-        tr.clickable:hover { background: #30363d; }
-        #chart-modal { display: none; margin-top: 15px; background: #0d1117; padding: 15px; border-radius: 8px; border: 1px solid #58a6ff; }
+        tr.clickable:hover { background: #363a45; }
+        tr.active { background: #434651 !important; }
+        .green { color: #089981; }
+        .red { color: #f23645; }
+
+        #chart-container { height: 550px; border-radius: 8px; overflow: hidden; background: #131722; border: 1px solid #434651; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>🚀 منصة تتبع العملات الرقمية والشموع</h1>
-    
-    <div class="box">
-        <h3>💳 شروط الاشتراك والتجربة</h3>
+    <h1>🚀 منصة تتبع العملات الرقمية والشموع الحية</h1>
+
+    <!-- صندوق الشروط ومحفظة الدوجي في الواجهة الفوقانية -->
+    <div class="terms-box">
+        <h3>💳 شروط الاشتراك والتجربة الرسمية</h3>
         <ul>
-            <li>🎁 <strong>التجربة المجانية:</strong> عندك <strong>يومين (48 ساعة)</strong> مجاناً لتجربة المنصة بالكامل!</li>
-            <li>💵 <strong>الاشتراك بعد التجربة:</strong> 5$ فقط تعطيك <strong>5 أشهر</strong> من الوصول الكامل.</li>
-            <li>📈 <strong>نظام المضاعفات:</strong> 10$ = 10 أشهر، وهكذا.</li>
+            <li>🎁 <strong>التجربة المجانية:</strong> عندك <strong>يومين (48 ساعة)</strong> تجربة مجانية بالكامل للمنصة والأسواق!</li>
+            <li>💵 <strong>قيمة الاشتراك:</strong> 5$ فقط لكل <strong>5 أشهر</strong> من الوصول المستمر.</li>
+            <li>📈 <strong>نظام المضاعفات:</strong> الزيادة بـ 5$ (10$ = 10 أشهر، وهكذا).</li>
         </ul>
-        <p>🟡 <strong>أرسل الدفعة إلى محفظة الدوجي الخاصة بك هنا:</strong></p>
+        <div style="text-align: center; font-weight: bold; margin-bottom: 5px; color: #d1d4dc;">أرسل المبلغ إلى عنوان محفظة الدوجي (DOGE) الخاصة بك:</div>
         <div class="wallet-box">حط_هنا_عنوان_محفظة_الدوجي_ديالك</div>
     </div>
+    
+    <div class="main-wrapper">
+        <div class="left-panel box">
+            <h3>📊 العملات والأسواق</h3>
+            <table id="crypto-table">
+                <thead>
+                    <tr>
+                        <th>العملة</th>
+                        <th>السعر</th>
+                        <th>التغير</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="3">جاري تحميل الأسواق...</td></tr>
+                </tbody>
+            </table>
+        </div>
 
-    <div class="box">
-        <h3>📊 الأسواق الحية (اضغط على أي عملة لرؤية التفاصيل والشموع)</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>العملة</th>
-                    <th>الرمز</th>
-                    <th>السعر (USD)</th>
-                    <th>التغير (24س)</th>
-                </tr>
-            </thead>
-            <tbody id="crypto-table">
-                <tr><td colspan="4">جاري تحميل الأسواق...</td></tr>
-            </tbody>
-        </table>
-        
-        <div id="chart-modal">
-            <h3 id="modal-title" style="color: #f0b90b; margin-top:0;">تفاصيل العملة</h3>
-            <p id="modal-info">اختر عملة من الجدول أعلاه لعرض التفاصيل الكاملة هنا.</p>
+        <div class="right-panel">
+            <div id="chart-container">
+                <div id="tradingview_widget" style="width:100%;height:100%;"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    let allCoins = [];
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        let allCoins = [];
 
-    async function fetchCrypto() {
-        try {
-            let res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=true');
-            allCoins = await res.json();
-            let table = document.getElementById('crypto-table');
-            table.innerHTML = '';
-            
-            allCoins.forEach((coin, index) => {
-                let p = coin.current_price;
-                let pStr = p < 0.0001 ? `$${p.toFixed(8)}` : (p < 1 ? `$${p.toFixed(4)}` : `$${p.toLocaleString()}`);
-                let c = coin.price_change_percentage_24h;
-                let cStr = c ? `${c.toFixed(2)}%` : "0.00%";
-                let cClass = c >= 0 ? 'green' : 'red';
+        async function fetchCrypto() {
+            try {
+                let res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=30&page=1&sparkline=false');
+                allCoins = await res.json();
+                let tableBody = document.querySelector('#crypto-table tbody');
+                tableBody.innerHTML = '';
                 
-                table.innerHTML += `
-                    <tr class="clickable" onclick="showCoinDetails(${index})">
-                        <td>${coin.name}</td>
-                        <td><strong>${coin.symbol.toUpperCase()}</strong></td>
-                        <td>${pStr}</td>
-                        <td class="${cClass}">${cStr}</td>
-                    </tr>`;
-            });
-        } catch(e) {
-            console.log("خطأ في جلب البيانات");
+                allCoins.forEach((coin) => {
+                    let p = coin.current_price;
+                    let pStr = p < 0.0001 ? `$${p.toFixed(8)}` : (p < 1 ? `$${p.toFixed(4)}` : `$${coin.current_price.toLocaleString()}`);
+                    let c = coin.price_change_percentage_24h;
+                    let cStr = c ? `${c.toFixed(2)}%` : "0.00%";
+                    let cClass = c >= 0 ? 'green' : 'red';
+                    
+                    let tvSymbol = `BINANCE:${coin.symbol.toUpperCase()}USDT`;
+                    
+                    tableBody.innerHTML += `
+                        <tr class="clickable ${coin.symbol === 'btc' ? 'active' : ''}" onclick="loadTradingView('${tvSymbol}', this)">
+                            <td>${coin.name} <span style="color:#787b86;">(${coin.symbol.toUpperCase()})</span></td>
+                            <td>${pStr}</td>
+                            <td class="${cClass}">${cStr}</td>
+                        </tr>`;
+                });
+            } catch(e) {}
         }
-    }
 
-    function showCoinDetails(index) {
-        let coin = allCoins[index];
-        let modal = document.getElementById('chart-modal');
-        let title = document.getElementById('modal-title');
-        let info = document.getElementById('modal-info');
-        
-        modal.style.display = 'block';
-        title.innerText = `📈 تحليل حركة العملة: ${coin.name} (${coin.symbol.toUpperCase()})`;
-        info.innerHTML = `
-            <p><strong>السعر الحالي:</strong> $${coin.current_price}</p>
-            <p><strong>أعلى سعر في 24 ساعة:</strong> $${coin.high_24h}</p>
-            <p><strong>أقل سعر في 24 ساعة:</strong> $${coin.low_24h}</p>
-            <p><strong>الرتبة في السوق:</strong> #${coin.market_cap_rank}</p>
-            <p style="color: #3fb950;">✨ الزبون يتمتع بيومين تجربة مجانية قبل المطالبة باشتراك 5$ لكل 5 أشهر.</p>
-        `;
-    }
+        function loadTradingView(symbol, clickedRow) {
+            document.querySelectorAll('#crypto-table tr').forEach(tr => tr.classList.remove('active'));
+            if(clickedRow) clickedRow.classList.add('active');
 
-    fetchCrypto();
-    setInterval(fetchCrypto, 30000);
-</script>
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "D",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "ar",
+                "toolbar_bg": "#1e222d",
+                "enable_publishing": false,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "container_id": "tradingview_widget",
+                "studies": [
+                    "BB@tv-basicstudies",
+                    "RSI@tv-basicstudies"
+                ]
+            });
+        }
+
+        fetchCrypto();
+        loadTradingView('BINANCE:BTCUSDT', document.querySelector('tr'));
+        setInterval(fetchCrypto, 30000);
+    </script>
 </body>
 </html>
