@@ -15,14 +15,13 @@
         .terms-box ul { margin: 0 0 15px 0; padding-right: 20px; font-size: 14px; line-height: 1.6; }
         .wallet-display { background: #131722; border: 2px dashed #ff9800; padding: 10px; text-align: center; word-break: break-all; font-family: monospace; color: #ff9800; font-size: 15px; border-radius: 5px; }
 
-        .main-wrapper { display: flex; flex-direction: column; gap: 20px; }
-        
-        @media (min-width: 992px) {
-            .main-wrapper { flex-direction: row; }
-            .left-panel { width: 320px; flex-shrink: 0; }
-            .right-panel { flex-grow: 1; }
-        }
+        /* شاشة الشموع الفوق ديريكت */
+        .chart-section { background: #2a2e39; border: 1px solid #434651; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .chart-header h3 { color: #00bcd4; margin: 0; }
+        #chart-container { height: 450px; border-radius: 8px; overflow: hidden; background: #131722; border: 1px solid #434651; }
 
+        /* جدول العملات لتحت */
         .box { background: #2a2e39; border: 1px solid #434651; padding: 15px; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 10px; border-bottom: 1px solid #434651; text-align: center; font-size: 14px; }
@@ -32,8 +31,6 @@
         tr.active { background: #434651 !important; }
         .green { color: #089981; }
         .red { color: #f23645; }
-
-        #chart-container { height: 550px; border-radius: 8px; overflow: hidden; background: #131722; border: 1px solid #434651; }
     </style>
 </head>
 <body>
@@ -49,31 +46,35 @@
             <li>📈 <strong>نظام المضاعفات:</strong> الزيادة بـ 5$ (10$ = 10 أشهر، وهكذا).</li>
         </ul>
         <div style="text-align: center; font-weight: bold; margin-bottom: 5px; color: #d1d4dc;">أرسل المبلغ إلى عنوان محفظة الدوجي (DOGE) الخاصة بك:</div>
-        <div class="wallet-box">حط_هنا_عنوان_محفظة_الدوجي_ديالك</div>
+        <div class="wallet-display">حط_هنا_عنوان_محفظة_الدوجي_ديالك</div>
     </div>
     
-    <div class="main-wrapper">
-        <div class="left-panel box">
-            <h3>📊 العملات والأسواق</h3>
-            <table id="crypto-table">
-                <thead>
-                    <tr>
-                        <th>العملة</th>
-                        <th>السعر</th>
-                        <th>التغير</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="3">جاري تحميل الأسواق...</td></tr>
-                </tbody>
-            </table>
+    <!-- قسم الشموع والشارت الفوق ديريكت كيف بغيتي -->
+    <div class="chart-section">
+        <div class="chart-header">
+            <h3 id="current-coin-title">📈 الشارت المباشر: Bitcoin (BTC)</h3>
+            <span style="font-size: 13px; color: #aaa;">اضغط على أي عملة في الأسفل لتغيير الشارت فوراً</span>
         </div>
+        <div id="chart-container">
+            <div id="tradingview_widget" style="width:100%;height:100%;"></div>
+        </div>
+    </div>
 
-        <div class="right-panel">
-            <div id="chart-container">
-                <div id="tradingview_widget" style="width:100%;height:100%;"></div>
-            </div>
-        </div>
+    <!-- جدول العملات لاختيار الشموع -->
+    <div class="box">
+        <h3>📊 اضغط على أي عملة لعرض الشموع الخاصة بها</h3>
+        <table id="crypto-table">
+            <thead>
+                <tr>
+                    <th>العملة</th>
+                    <th>السعر (USD)</th>
+                    <th>التغير (24س)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="3">جاري تحميل الأسواق...</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -97,7 +98,7 @@
                     let tvSymbol = `BINANCE:${coin.symbol.toUpperCase()}USDT`;
                     
                     tableBody.innerHTML += `
-                        <tr class="clickable ${coin.symbol === 'btc' ? 'active' : ''}" onclick="loadTradingView('${tvSymbol}', this)">
+                        <tr class="clickable ${coin.symbol === 'btc' ? 'active' : ''}" onclick="loadTradingView('${tvSymbol}', '${coin.name} (${coin.symbol.toUpperCase()})', this)">
                             <td>${coin.name} <span style="color:#787b86;">(${coin.symbol.toUpperCase()})</span></td>
                             <td>${pStr}</td>
                             <td class="${cClass}">${cStr}</td>
@@ -106,9 +107,14 @@
             } catch(e) {}
         }
 
-        function loadTradingView(symbol, clickedRow) {
+        function loadTradingView(symbol, coinName, clickedRow) {
             document.querySelectorAll('#crypto-table tr').forEach(tr => tr.classList.remove('active'));
             if(clickedRow) clickedRow.classList.add('active');
+
+            document.getElementById('current-coin-title').innerText = `📈 الشارت المباشر: ${coinName}`;
+
+            // طلّع الصفحة شوية لفوق ديريكت لعند الشارت باش يوفره الزبون مباشرة
+            document.querySelector('.chart-section').scrollIntoView({ behavior: 'smooth' });
 
             new TradingView.widget({
                 "autosize": true,
@@ -131,7 +137,7 @@
         }
 
         fetchCrypto();
-        loadTradingView('BINANCE:BTCUSDT', document.querySelector('tr'));
+        loadTradingView('BINANCE:BTCUSDT', 'Bitcoin (BTC)', document.querySelector('tr'));
         setInterval(fetchCrypto, 30000);
     </script>
 </body>
